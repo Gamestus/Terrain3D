@@ -63,6 +63,7 @@ private:
 	bool _macro_variation_enabled = false;
 	bool _projection_enabled = false;
 	bool _snow_enabled = false;
+	bool _puddles_enabled = false;
 
 	// PBR Outputs
 	bool _output_albedo_enabled = true;
@@ -146,6 +147,8 @@ public:
 	bool get_projection_enabled() const { return _projection_enabled; }
 	void set_snow_enabled(const bool p_enabled);
 	bool get_snow_enabled() const { return _snow_enabled; }
+	void set_puddles_enabled(const bool p_enabled);
+	bool get_puddles_enabled() const { return _puddles_enabled; }
 
 	void set_shader_override_enabled(const bool p_enabled);
 	bool is_shader_override_enabled() const { return _shader_override_enabled; }

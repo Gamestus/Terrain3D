@@ -1,10 +1,10 @@
 [gd_resource type="Terrain3DMaterial" format=3 uid="uid://ccvn15t8km0ft"]
 
-[sub_resource type="Gradient" id="Gradient_vr1m7"]
+[sub_resource type="Gradient" id="Gradient_d2qh2"]
 offsets = PackedFloat32Array(0.2, 1)
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_d8lcj"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bqowf"]
 noise_type = 2
 frequency = 0.03
 cellular_jitter = 3.0
@@ -16,37 +16,60 @@ domain_warp_fractal_type = 2
 domain_warp_fractal_lacunarity = 1.5
 domain_warp_fractal_gain = 1.0
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bov7h"]
-noise = SubResource("FastNoiseLite_d8lcj")
-color_ramp = SubResource("Gradient_vr1m7")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hxs0i"]
+noise = SubResource("FastNoiseLite_bqowf")
+color_ramp = SubResource("Gradient_d2qh2")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0hg6v"]
+frequency = 0.0205
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rlu6m"]
+noise = SubResource("FastNoiseLite_0hg6v")
 seamless = true
 
 [resource]
 _shader_parameters = {
-"_mouse_layer": 2147483648,
-"auto_base_texture": 0,
-"auto_height_reduction": 0.05,
-"auto_overlay_texture": 1,
-"auto_slope": 0.45,
-"bias_distance": 512.0,
-"blend_sharpness": 0.5,
-"depth_blur": 0.0,
-"dual_scale_far": 170.0,
-"dual_scale_near": 100.0,
-"dual_scale_reduction": 0.3,
-"dual_scale_texture": 0,
+&"auto_base_texture": 0,
+&"auto_height_reduction": 0.1,
+&"auto_overlay_texture": 1,
+&"auto_slope": 1.0,
+&"bias_distance": 512.0,
+&"blend_sharpness": 0.5,
+&"depth_blur": 0.0,
+&"dual_scale_far": 170.0,
+&"dual_scale_near": 100.0,
+&"dual_scale_reduction": 0.3,
+&"dual_scale_texture": 0,
 &"flat_terrain_normals": false,
-&"ground_level": -199.999962,
-"macro_variation1": Color(0.855, 0.8625, 0.9, 1),
-"macro_variation2": Color(0.9, 0.885, 0.81, 1),
-"macro_variation_slope": 0.333,
-"mipmap_bias": 1.0,
-"noise1_angle": 0.1,
-"noise1_offset": Vector2(0.5, 0.5),
-"noise1_scale": 0.04,
-"noise2_scale": 0.076,
-"noise_texture": SubResource("NoiseTexture2D_bov7h"),
-&"region_blend": 0.9600000456,
+&"ground_level": -20.0,
+&"macro_variation1": Color(1, 1, 1, 1),
+&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise_texture": SubResource("NoiseTexture2D_hxs0i"),
+&"puddle_color": Color(0.08, 0.12, 0.16, 0.85),
+&"puddle_edge_fade": 0.08,
+&"puddle_max_material_height": 0.65999998524768,
+&"puddle_metallic": 0.0,
+&"puddle_noise": SubResource("NoiseTexture2D_rlu6m"),
+&"puddle_noise_scale": Vector2(0.01, 0.01),
+&"puddle_noise_threshold": 0.5,
+&"puddle_normal_depth": 1.0,
+&"puddle_rain_intensity": 0.65999998524768,
+&"puddle_ripple_max_radius": 2.0,
+&"puddle_ripple_scale": 1.0,
+&"puddle_ripple_speed": 0.5,
+&"puddle_ripple_strength": 1.0,
+&"puddle_roughness": 0.04,
+&"puddle_slope_falloff": 0.12,
+&"puddle_slope_limit": 0.88,
+&"puddle_specular": 0.65,
+&"region_blend": 0.25,
 &"shader_uniforms": null,
 &"shader_uniforms::auto_shader": null,
 &"shader_uniforms::displacement": null,
@@ -54,18 +77,15 @@ _shader_parameters = {
 &"shader_uniforms::general": null,
 &"shader_uniforms::macro_variation": null,
 &"shader_uniforms::mipmaps": null,
-&"shader_uniforms::snow": null,
+&"shader_uniforms::puddles": null,
 &"shader_uniforms::world_background_noise": null,
-&"snow_amount": 0.638000030305,
-&"snow_blend_sharpness": 0.027000001282499998,
-&"snow_texture": 2,
-"tri_scale_reduction": 0.3,
+&"tri_scale_reduction": 0.3,
 &"world_noise_fragment_normals": false,
-&"world_noise_height": 64.00001585487689,
+&"world_noise_height": 32.0,
 &"world_noise_lod_distance": 7500.0,
 &"world_noise_max_octaves": 4,
 &"world_noise_min_octaves": 2,
-&"world_noise_offset": Vector3(-0.67, -4, -2.61),
+&"world_noise_offset": Vector3(0, 0, 0),
 &"world_noise_scale": 5.0
 }
 world_background = 2
@@ -73,5 +93,5 @@ auto_shader_enabled = true
 dual_scaling_enabled = true
 macro_variation_enabled = true
 projection_enabled = true
-snow_enabled = true
+puddles_enabled = true
 displacement_sharpness = 0.25

@@ -89,6 +89,7 @@ group_uniforms;
 //INSERT: DUAL_SCALING_UNIFORMS
 //INSERT: MACRO_VARIATION_UNIFORMS
 //INSERT: SNOW_UNIFORMS
+//INSERT: PUDDLES_UNIFORMS
 
 group_uniforms shader_uniforms.mipmaps;
 uniform float bias_distance : hint_range(0.0, 16384.0, 0.1) = 512.0;
@@ -247,6 +248,8 @@ void vertex() {
 float random(in vec2 xy) {
 	return fract(sin(dot(xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
+
+//INSERT: PUDDLES_FUNCTIONS
 
 vec2 rotate_vec2(const vec2 v, const vec2 cs) {
 	return vec2(fma(cs.x, v.x,  cs.y * v.y), fma(cs.x, v.y, -cs.y * v.x));
@@ -590,15 +593,19 @@ void fragment() {
 
 	//INSERT: SNOW_BLEND
 	//INSERT: MACRO_VARIATION
+	//INSERT: PUDDLES
 	
 	// Wetness/roughness modifier, converting 0 - 1 range to -1 to 1 range, clamped to Godot roughness values 
 	float roughness = clamp(fma(color_map.a - 0.5, 2.0, mat.normal_rough.a), 0., 1.);
 	
+//INSERT: PUDDLES_APPLY
 	// Apply PBR
 //INSERT: OUTPUT_ALBEDO
 //INSERT: OUTPUT_ALBEDO_GREY
 //INSERT: OUTPUT_ROUGHNESS
+//INSERT: PUDDLES_OUTPUT_ROUGHNESS
 //INSERT: OUTPUT_NORMAL_MAP
+//INSERT: PUDDLES_OUTPUT_NORMAL_MAP
 //INSERT: OUTPUT_AMBIENT_OCCLUSION
 
 }

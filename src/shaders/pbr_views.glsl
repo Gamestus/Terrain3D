@@ -61,8 +61,15 @@ R"(
 //INSERT: OUTPUT_ROUGHNESS
 	ROUGHNESS = roughness;
 	SPECULAR = 1. - mat.normal_rough.a;
+//INSERT: PUDDLES_OUTPUT_ROUGHNESS
+	ROUGHNESS = roughness;
+	SPECULAR = mix(1.0 - mat.normal_rough.a, puddle_specular, __puddle_mask);
+	METALLIC = puddle_metallic * __puddle_mask;
 //INSERT: OUTPUT_NORMAL_MAP
 	// Repack final normal map value.
+	NORMAL_MAP = fma(normalize(mat.normal_rough.xzy), vec3(0.5), vec3(0.5));
+	NORMAL_MAP_DEPTH = mat.normal_map_depth;
+//INSERT: PUDDLES_OUTPUT_NORMAL_MAP
 	NORMAL_MAP = fma(normalize(mat.normal_rough.xzy), vec3(0.5), vec3(0.5));
 	NORMAL_MAP_DEPTH = mat.normal_map_depth;
 //INSERT: OUTPUT_AMBIENT_OCCLUSION

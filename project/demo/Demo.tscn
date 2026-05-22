@@ -39,6 +39,7 @@ top_level = true
 metadata/_edit_lock_ = true
 
 [node name="Terrain3DParticles" parent="Terrain3D" unique_id=518978467 node_paths=PackedStringArray("terrain") instance=ExtResource("8_fwrtk")]
+visible = false
 terrain = NodePath("..")
 
 [editable path="Environment"]

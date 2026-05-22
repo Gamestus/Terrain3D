@@ -48,6 +48,9 @@ void Terrain3DMaterial::_preload_shaders() {
 #include "shaders/snow.glsl"
 			, "snow");
 	_parse_shader(
+#include "shaders/puddles.glsl"
+			, "puddles");
+	_parse_shader(
 #include "shaders/debug_views.glsl"
 			, "debug_views");
 	_parse_shader(
@@ -201,6 +204,17 @@ String Terrain3DMaterial::_generate_shader_code() const {
 	if (!_snow_enabled) {
 		excludes.push_back("SNOW_UNIFORMS");
 		excludes.push_back("SNOW_BLEND");
+	}
+	if (!_puddles_enabled) {
+		excludes.push_back("PUDDLES_FUNCTIONS");
+		excludes.push_back("PUDDLES_UNIFORMS");
+		excludes.push_back("PUDDLES");
+		excludes.push_back("PUDDLES_APPLY");
+		excludes.push_back("PUDDLES_OUTPUT_ROUGHNESS");
+		excludes.push_back("PUDDLES_OUTPUT_NORMAL_MAP");
+	} else {
+		excludes.push_back("OUTPUT_ROUGHNESS");
+		excludes.push_back("OUTPUT_NORMAL_MAP");
 	}
 	if (_terrain->get_tessellation_level() == 0) {
 		excludes.push_back("DISPLACEMENT_UNIFORMS");
@@ -863,6 +877,12 @@ void Terrain3DMaterial::set_snow_enabled(const bool p_enabled) {
 	_update_shader();
 }
 
+void Terrain3DMaterial::set_puddles_enabled(const bool p_enabled) {
+	SET_IF_DIFF(_puddles_enabled, p_enabled);
+	LOG(INFO, "Enable puddles: ", p_enabled);
+	_update_shader();
+}
+
 void Terrain3DMaterial::set_shader_override_enabled(const bool p_enabled) {
 	SET_IF_DIFF(_shader_override_enabled, p_enabled);
 	LOG(INFO, "Enable shader override: ", p_enabled);
@@ -1331,6 +1351,8 @@ void Terrain3DMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_projection_enabled"), &Terrain3DMaterial::get_projection_enabled);
 	ClassDB::bind_method(D_METHOD("set_snow_enabled", "enabled"), &Terrain3DMaterial::set_snow_enabled);
 	ClassDB::bind_method(D_METHOD("get_snow_enabled"), &Terrain3DMaterial::get_snow_enabled);
+	ClassDB::bind_method(D_METHOD("set_puddles_enabled", "enabled"), &Terrain3DMaterial::set_puddles_enabled);
+	ClassDB::bind_method(D_METHOD("get_puddles_enabled"), &Terrain3DMaterial::get_puddles_enabled);
 
 	ClassDB::bind_method(D_METHOD("set_shader_override_enabled", "enabled"), &Terrain3DMaterial::set_shader_override_enabled);
 	ClassDB::bind_method(D_METHOD("is_shader_override_enabled"), &Terrain3DMaterial::is_shader_override_enabled);
@@ -1419,6 +1441,7 @@ void Terrain3DMaterial::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "macro_variation_enabled"), "set_macro_variation_enabled", "get_macro_variation_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "projection_enabled"), "set_projection_enabled", "get_projection_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "snow_enabled"), "set_snow_enabled", "get_snow_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "puddles_enabled"), "set_puddles_enabled", "get_puddles_enabled");
 
 	ADD_GROUP("PBR Output", "output_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "output_albedo"), "set_output_albedo_enabled", "get_output_albedo_enabled");

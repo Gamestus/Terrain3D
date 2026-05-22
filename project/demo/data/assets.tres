@@ -56,7 +56,6 @@ albedo_texture = ExtResource("3_g8f2m")
 normal_texture = ExtResource("4_aw5y1")
 normal_depth = 1.4
 ao_strength = 1.0
-displacement_scale = 0.2
 detiling_rotation = 0.161
 
 [sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_uyhyi"]
