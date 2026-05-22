@@ -45,6 +45,9 @@ void Terrain3DMaterial::_preload_shaders() {
 #include "shaders/projection.glsl"
 			, "projection");
 	_parse_shader(
+#include "shaders/snow.glsl"
+			, "snow");
+	_parse_shader(
 #include "shaders/debug_views.glsl"
 			, "debug_views");
 	_parse_shader(
@@ -194,6 +197,10 @@ String Terrain3DMaterial::_generate_shader_code() const {
 	}
 	if (!_projection_enabled) {
 		excludes.push_back("PROJECTION");
+	}
+	if (!_snow_enabled) {
+		excludes.push_back("SNOW_UNIFORMS");
+		excludes.push_back("SNOW_BLEND");
 	}
 	if (_terrain->get_tessellation_level() == 0) {
 		excludes.push_back("DISPLACEMENT_UNIFORMS");
@@ -717,6 +724,8 @@ void Terrain3DMaterial::_update_uniforms(const RID &p_material, const uint32_t p
 	RS->material_set_param(p_material, "_texture_ao_strength_array", asset_list->get_texture_ao_strengths());
 	RS->material_set_param(p_material, "_texture_ao_affect_array", asset_list->get_texture_ao_light_affects());
 	RS->material_set_param(p_material, "_texture_roughness_mod_array", asset_list->get_texture_roughness_mods());
+	RS->material_set_param(p_material, "_texture_snow_amount_array", asset_list->get_texture_snow_amount_mods());
+	RS->material_set_param(p_material, "_texture_height_blend_array", asset_list->get_texture_height_blends());
 	RS->material_set_param(p_material, "_texture_uv_scale_array", asset_list->get_texture_uv_scales());
 	RS->material_set_param(p_material, "_texture_detile_array", asset_list->get_texture_detiles());
 	RS->material_set_param(p_material, "_texture_displacement_array", asset_list->get_texture_displacements());
@@ -845,6 +854,12 @@ void Terrain3DMaterial::set_macro_variation_enabled(const bool p_enabled) {
 void Terrain3DMaterial::set_projection_enabled(const bool p_enabled) {
 	SET_IF_DIFF(_projection_enabled, p_enabled);
 	LOG(INFO, "Enable projection: ", p_enabled);
+	_update_shader();
+}
+
+void Terrain3DMaterial::set_snow_enabled(const bool p_enabled) {
+	SET_IF_DIFF(_snow_enabled, p_enabled);
+	LOG(INFO, "Enable snow: ", p_enabled);
 	_update_shader();
 }
 
@@ -1314,6 +1329,8 @@ void Terrain3DMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_macro_variation_enabled"), &Terrain3DMaterial::get_macro_variation_enabled);
 	ClassDB::bind_method(D_METHOD("set_projection_enabled", "enabled"), &Terrain3DMaterial::set_projection_enabled);
 	ClassDB::bind_method(D_METHOD("get_projection_enabled"), &Terrain3DMaterial::get_projection_enabled);
+	ClassDB::bind_method(D_METHOD("set_snow_enabled", "enabled"), &Terrain3DMaterial::set_snow_enabled);
+	ClassDB::bind_method(D_METHOD("get_snow_enabled"), &Terrain3DMaterial::get_snow_enabled);
 
 	ClassDB::bind_method(D_METHOD("set_shader_override_enabled", "enabled"), &Terrain3DMaterial::set_shader_override_enabled);
 	ClassDB::bind_method(D_METHOD("is_shader_override_enabled"), &Terrain3DMaterial::is_shader_override_enabled);
@@ -1401,6 +1418,7 @@ void Terrain3DMaterial::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "dual_scaling_enabled"), "set_dual_scaling_enabled", "get_dual_scaling_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "macro_variation_enabled"), "set_macro_variation_enabled", "get_macro_variation_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "projection_enabled"), "set_projection_enabled", "get_projection_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "snow_enabled"), "set_snow_enabled", "get_snow_enabled");
 
 	ADD_GROUP("PBR Output", "output_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "output_albedo"), "set_output_albedo_enabled", "get_output_albedo_enabled");

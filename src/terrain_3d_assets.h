@@ -37,6 +37,8 @@ private:
 	PackedFloat32Array _texture_ao_strengths;
 	PackedFloat32Array _texture_ao_light_affects;
 	PackedFloat32Array _texture_roughness_mods;
+	PackedFloat32Array _texture_snow_amount_mods;
+	PackedFloat32Array _texture_height_blends;
 	PackedFloat32Array _texture_uv_scales;
 	PackedVector2Array _texture_detiles;
 	PackedVector2Array _texture_displacements;
@@ -82,6 +84,8 @@ public:
 	PackedFloat32Array get_texture_ao_strengths() const { return _texture_ao_strengths; }
 	PackedFloat32Array get_texture_ao_light_affects() const { return _texture_ao_light_affects; }
 	PackedFloat32Array get_texture_roughness_mods() const { return _texture_roughness_mods; }
+	PackedFloat32Array get_texture_snow_amount_mods() const { return _texture_snow_amount_mods; }
+	PackedFloat32Array get_texture_height_blends() const { return _texture_height_blends; }
 	PackedFloat32Array get_texture_uv_scales() const { return _texture_uv_scales; }
 	PackedVector2Array get_texture_detiles() const { return _texture_detiles; }
 	PackedVector2Array get_texture_displacements() const { return _texture_displacements; }

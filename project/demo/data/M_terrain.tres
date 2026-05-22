@@ -1,4 +1,4 @@
-[gd_resource type="Terrain3DMaterial" load_steps=4 format=3 uid="uid://ccvn15t8km0ft"]
+[gd_resource type="Terrain3DMaterial" format=3 uid="uid://ccvn15t8km0ft"]
 
 [sub_resource type="Gradient" id="Gradient_vr1m7"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -54,7 +54,11 @@ _shader_parameters = {
 &"shader_uniforms::general": null,
 &"shader_uniforms::macro_variation": null,
 &"shader_uniforms::mipmaps": null,
+&"shader_uniforms::snow": null,
 &"shader_uniforms::world_background_noise": null,
+&"snow_amount": 0.638000030305,
+&"snow_blend_sharpness": 0.027000001282499998,
+&"snow_texture": 2,
 "tri_scale_reduction": 0.3,
 &"world_noise_fragment_normals": false,
 &"world_noise_height": 64.00001585487689,
@@ -69,4 +73,5 @@ auto_shader_enabled = true
 dual_scaling_enabled = true
 macro_variation_enabled = true
 projection_enabled = true
+snow_enabled = true
 displacement_sharpness = 0.25

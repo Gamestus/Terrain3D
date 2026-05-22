@@ -48,6 +48,7 @@ uniform vec2 _region_locations[1024];
 uniform float _texture_uv_scale_array[32];
 uniform vec2 _texture_detile_array[32];
 uniform vec2 _texture_displacement_array[32];
+uniform float _texture_height_blend_array[32];
 uniform highp sampler2DArray _height_maps : repeat_disable;
 uniform highp sampler2DArray _control_maps : repeat_disable;
 //INSERT: TEXTURE_SAMPLERS_LINEAR_ANISOTROPIC
@@ -174,6 +175,7 @@ void accumulate_material(const mat3 TNB, const float weight, const ivec3 index,
 			fma(id_cs_angle.y, c_cs_angle.x, id_cs_angle.x * c_cs_angle.y));
 
 		float h = textureLod(_texture_array_albedo, vec3(id_uv, float(id)), 0.).a;
+		float blend_h = clamp(fma(h - 0.5, _texture_height_blend_array[id], 0.5), 0., 1.);
 		vec4 nrm = textureLod(_texture_array_normal, vec3(id_uv, float(id)), 0.);
 		// Unpack and rotate normal map.
 		nrm.xyz = fma(nrm.xzy, vec3(2.0), vec3(-1.0));
@@ -181,7 +183,7 @@ void accumulate_material(const mat3 TNB, const float weight, const ivec3 index,
 
 		world_normal = FAST_WORLD_NORMAL(nrm).y;
 
-		float id_weight = exp2(sharpness * log2(weight + id_w + h)) * weight;
+		float id_weight = exp2(sharpness * log2(weight + id_w + blend_h)) * weight;
 
 		// height is modified after weight calculation so that asset offset and scale values do not interfear with material blending.
 		float height_scale  = (_texture_displacement_array[id].y * 0.04) / (control_scale * id_scale);
@@ -211,9 +213,10 @@ void accumulate_material(const mat3 TNB, const float weight, const ivec3 index,
 			fma(id_cs_angle.y, c_cs_angle.x, id_cs_angle.x * c_cs_angle.y));
 
 		float h = textureLod(_texture_array_albedo, vec3(id_uv, float(id)), 0.).a;
+		float blend_h = clamp(fma(h - 0.5, _texture_height_blend_array[id], 0.5), 0., 1.);
 		// Normals are not required for 2nd ID as they are not used to adjust the weights.
 
-		float id_weight = exp2(sharpness * log2(weight + id_w + h * clamp(world_normal, 0., 1.))) * weight;
+		float id_weight = exp2(sharpness * log2(weight + id_w + blend_h * clamp(world_normal, 0., 1.))) * weight;
 
 		// height is modified after weight calculation so that asset offset and scale values do not interfear with material blending.
 		float height_scale  = (_texture_displacement_array[id].y * 0.04) / (control_scale * id_scale);

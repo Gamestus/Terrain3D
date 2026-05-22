@@ -115,6 +115,10 @@ public partial class Terrain3DMaterial : Resource
 		/// </summary>
 		public new static readonly StringName ProjectionEnabled = "projection_enabled";
 		/// <summary>
+		/// Cached name for the 'snow_enabled' member.
+		/// </summary>
+		public new static readonly StringName SnowEnabled = "snow_enabled";
+		/// <summary>
 		/// Cached name for the 'output_albedo' member.
 		/// </summary>
 		public new static readonly StringName OutputAlbedo = "output_albedo";
@@ -278,6 +282,12 @@ public partial class Terrain3DMaterial : Resource
 	{
 		get => Get(GDExtensionPropertyName.ProjectionEnabled).As<bool>();
 		set => Set(GDExtensionPropertyName.ProjectionEnabled, value);
+	}
+
+	public new bool SnowEnabled
+	{
+		get => Get(GDExtensionPropertyName.SnowEnabled).As<bool>();
+		set => Set(GDExtensionPropertyName.SnowEnabled, value);
 	}
 
 	public new bool OutputAlbedo

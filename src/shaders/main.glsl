@@ -60,6 +60,8 @@ uniform float _texture_normal_depth_array[32];
 uniform float _texture_ao_strength_array[32];
 uniform float _texture_ao_affect_array[32];
 uniform float _texture_roughness_mod_array[32];
+uniform float _texture_snow_amount_array[32];
+uniform float _texture_height_blend_array[32];
 uniform float _texture_uv_scale_array[32];
 uniform vec2 _texture_detile_array[32];
 uniform vec4 _texture_color_array[32];
@@ -86,6 +88,7 @@ group_uniforms;
 //INSERT: DISPLACEMENT_UNIFORMS
 //INSERT: DUAL_SCALING_UNIFORMS
 //INSERT: MACRO_VARIATION_UNIFORMS
+//INSERT: SNOW_UNIFORMS
 
 group_uniforms shader_uniforms.mipmaps;
 uniform float bias_distance : hint_range(0.0, 16384.0, 0.1) = 512.0;
@@ -103,6 +106,7 @@ struct material {
 	float normal_map_depth;
 	float ao;
 	float ao_affect;
+	float snow_amount_modifier;
 	float total_weight;
 };
 
@@ -326,6 +330,7 @@ void accumulate_material(vec3 base_ddx, vec3 base_ddy, const mat3 TNB, const flo
 
 //INSERT: DUAL_SCALING_MIX
 		world_normal = FAST_WORLD_NORMAL(nrm).y;
+		alb.a = clamp(fma(alb.a - 0.5, _texture_height_blend_array[id], 0.5), 0., 1.);
 
 		float id_weight = exp2(sharpness * log2(weight + id_w + alb.a)) * weight;
 		mat.albedo_height = fma(alb, vec4(id_weight), mat.albedo_height);
@@ -333,6 +338,7 @@ void accumulate_material(vec3 base_ddx, vec3 base_ddy, const mat3 TNB, const flo
 		mat.normal_map_depth = fma(_texture_normal_depth_array[id], id_weight, mat.normal_map_depth);
 		mat.ao = fma(ao, id_weight, mat.ao);
 		mat.ao_affect = fma(_texture_ao_affect_array[id], id_weight, mat.ao_affect);
+		mat.snow_amount_modifier = fma(_texture_snow_amount_array[id], id_weight, mat.snow_amount_modifier);
 		mat.total_weight += id_weight;
 	}
 
@@ -372,12 +378,14 @@ void accumulate_material(vec3 base_ddx, vec3 base_ddy, const mat3 TNB, const flo
 		nrm.xz = rotate_vec2(nrm.xz, id_cs_angle) * p_align;
 
 //INSERT: DUAL_SCALING_MIX
+		alb.a = clamp(fma(alb.a - 0.5, _texture_height_blend_array[id], 0.5), 0., 1.);
 		float id_weight = exp2(sharpness * log2(weight + id_w + alb.a * clamp(world_normal, 0., 1.))) * weight;
 		mat.albedo_height = fma(alb, vec4(id_weight), mat.albedo_height);
 		mat.normal_rough = fma(nrm, vec4(id_weight), mat.normal_rough);
 		mat.normal_map_depth = fma(_texture_normal_depth_array[id], id_weight, mat.normal_map_depth);
 		mat.ao = fma(ao, id_weight, mat.ao);
 		mat.ao_affect = fma(_texture_ao_affect_array[id], id_weight, mat.ao_affect);
+		mat.snow_amount_modifier = fma(_texture_snow_amount_array[id], id_weight, mat.snow_amount_modifier);
 		mat.total_weight += id_weight;
 	}
 }
@@ -555,7 +563,7 @@ void fragment() {
 	}
 
 	// Struct to accumulate all texture data.
-	material mat = material(vec4(0.0), vec4(0.0), 0., 0., 0., 0.);
+	material mat = material(vec4(0.0), vec4(0.0), 0., 0., 0., 0., 0.);
 
 	// 2 - 4 lookups, 2 - 6 if dual scale texture
 	accumulate_material(base_ddx, base_ddy, TNB, weights[3], index[3], control[3], t_weights[3],
@@ -578,7 +586,9 @@ void fragment() {
 	mat.normal_map_depth *= weight_inv;
 	mat.ao *= weight_inv;
 	mat.ao_affect *= weight_inv;
+	mat.snow_amount_modifier *= weight_inv;
 
+	//INSERT: SNOW_BLEND
 	//INSERT: MACRO_VARIATION
 	
 	// Wetness/roughness modifier, converting 0 - 1 range to -1 to 1 range, clamped to Godot roughness values 

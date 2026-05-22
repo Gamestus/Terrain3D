@@ -52,6 +52,8 @@ void Terrain3DTextureAsset::clear() {
 	_ao_strength = 0.5f;
 	_ao_light_affect = 0.0f;
 	_roughness = 0.f;
+	_snow_amount_modifier = 1.0f;
+	_height_blend_strength = 1.0f;
 	_displacement_scale = 0.f;
 	_displacement_offset = 0.f;
 	_uv_scale = 0.1f;
@@ -164,6 +166,20 @@ void Terrain3DTextureAsset::set_roughness(const real_t p_roughness) {
 	emit_signal("setting_changed");
 }
 
+void Terrain3DTextureAsset::set_snow_amount_modifier(const real_t p_snow_amount_modifier) {
+	SET_IF_DIFF(_snow_amount_modifier, CLAMP(p_snow_amount_modifier, 0.0f, 2.0f));
+	LOG(INFO, "Setting snow_amount_modifier: ", _snow_amount_modifier);
+	LOG(DEBUG, "Emitting setting_changed");
+	emit_signal("setting_changed");
+}
+
+void Terrain3DTextureAsset::set_height_blend_strength(const real_t p_height_blend_strength) {
+	SET_IF_DIFF(_height_blend_strength, CLAMP(p_height_blend_strength, 0.0f, 2.0f));
+	LOG(INFO, "Setting height_blend_strength: ", _height_blend_strength);
+	LOG(DEBUG, "Emitting setting_changed");
+	emit_signal("setting_changed");
+}
+
 void Terrain3DTextureAsset::set_ao_strength(const real_t p_ao_strength) {
 	SET_IF_DIFF(_ao_strength, CLAMP(p_ao_strength, 0.0f, 1.0f));
 	LOG(INFO, "Setting ao_strength: ", _ao_strength);
@@ -245,6 +261,10 @@ void Terrain3DTextureAsset::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_ao_light_affect"), &Terrain3DTextureAsset::get_ao_light_affect);
 	ClassDB::bind_method(D_METHOD("set_roughness", "roughness"), &Terrain3DTextureAsset::set_roughness);
 	ClassDB::bind_method(D_METHOD("get_roughness"), &Terrain3DTextureAsset::get_roughness);
+	ClassDB::bind_method(D_METHOD("set_snow_amount_modifier", "snow_amount_modifier"), &Terrain3DTextureAsset::set_snow_amount_modifier);
+	ClassDB::bind_method(D_METHOD("get_snow_amount_modifier"), &Terrain3DTextureAsset::get_snow_amount_modifier);
+	ClassDB::bind_method(D_METHOD("set_height_blend_strength", "height_blend_strength"), &Terrain3DTextureAsset::set_height_blend_strength);
+	ClassDB::bind_method(D_METHOD("get_height_blend_strength"), &Terrain3DTextureAsset::get_height_blend_strength);
 	ClassDB::bind_method(D_METHOD("set_displacement_scale", "displacement_scale"), &Terrain3DTextureAsset::set_displacement_scale);
 	ClassDB::bind_method(D_METHOD("get_displacement_scale"), &Terrain3DTextureAsset::get_displacement_scale);
 	ClassDB::bind_method(D_METHOD("set_displacement_offset", "displacement_offset"), &Terrain3DTextureAsset::set_displacement_offset);
@@ -265,6 +285,8 @@ void Terrain3DTextureAsset::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ao_strength", PROPERTY_HINT_RANGE, "0.0, 1.0"), "set_ao_strength", "get_ao_strength");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "ao_light_affect", PROPERTY_HINT_RANGE, "0.0, 1.0"), "set_ao_light_affect", "get_ao_light_affect");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "roughness", PROPERTY_HINT_RANGE, "-1.0, 1.0"), "set_roughness", "get_roughness");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "snow_amount_modifier", PROPERTY_HINT_RANGE, "0.0, 2.0"), "set_snow_amount_modifier", "get_snow_amount_modifier");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height_blend_strength", PROPERTY_HINT_RANGE, "0.0, 2.0"), "set_height_blend_strength", "get_height_blend_strength");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "displacement_scale", PROPERTY_HINT_RANGE, "0.0, 2.0"), "set_displacement_scale", "get_displacement_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "displacement_offset", PROPERTY_HINT_RANGE, "-1.0, 1.0"), "set_displacement_offset", "get_displacement_offset");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "uv_scale", PROPERTY_HINT_RANGE, "0.001, 2.0, or_greater"), "set_uv_scale", "get_uv_scale");

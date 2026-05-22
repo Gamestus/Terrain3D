@@ -352,6 +352,8 @@ void Terrain3DAssets::_update_texture_settings() {
 		_texture_ao_strengths.clear();
 		_texture_ao_light_affects.clear();
 		_texture_roughness_mods.clear();
+		_texture_snow_amount_mods.clear();
+		_texture_height_blends.clear();
 		_texture_uv_scales.clear();
 		_texture_detiles.clear();
 		_texture_displacements.clear();
@@ -369,6 +371,8 @@ void Terrain3DAssets::_update_texture_settings() {
 			_texture_ao_strengths.push_back(ta->get_ao_strength());
 			_texture_ao_light_affects.push_back(ta->get_ao_light_affect());
 			_texture_roughness_mods.push_back(ta->get_roughness());
+			_texture_snow_amount_mods.push_back(ta->get_snow_amount_modifier());
+			_texture_height_blends.push_back(ta->get_height_blend_strength());
 			_texture_uv_scales.push_back(ta->get_uv_scale());
 			_texture_detiles.push_back(Vector2(ta->get_detiling_rotation(), ta->get_detiling_shift()));
 			_texture_displacements.push_back(Vector2(ta->get_displacement_offset(), ta->get_displacement_scale()));
@@ -463,6 +467,8 @@ void Terrain3DAssets::destroy() {
 	_texture_ao_strengths.clear();
 	_texture_ao_light_affects.clear();
 	_texture_roughness_mods.clear();
+	_texture_snow_amount_mods.clear();
+	_texture_height_blends.clear();
 	_texture_uv_scales.clear();
 	_texture_detiles.clear();
 
@@ -734,6 +740,8 @@ void Terrain3DAssets::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_texture_ao_strengths"), &Terrain3DAssets::get_texture_ao_strengths);
 	ClassDB::bind_method(D_METHOD("get_texture_ao_light_affects"), &Terrain3DAssets::get_texture_ao_light_affects);
 	ClassDB::bind_method(D_METHOD("get_texture_roughness_mods"), &Terrain3DAssets::get_texture_roughness_mods);
+	ClassDB::bind_method(D_METHOD("get_texture_snow_amount_mods"), &Terrain3DAssets::get_texture_snow_amount_mods);
+	ClassDB::bind_method(D_METHOD("get_texture_height_blends"), &Terrain3DAssets::get_texture_height_blends);
 	ClassDB::bind_method(D_METHOD("get_texture_uv_scales"), &Terrain3DAssets::get_texture_uv_scales);
 	ClassDB::bind_method(D_METHOD("get_texture_detiles"), &Terrain3DAssets::get_texture_detiles);
 	ClassDB::bind_method(D_METHOD("get_texture_displacements"), &Terrain3DAssets::get_texture_displacements);

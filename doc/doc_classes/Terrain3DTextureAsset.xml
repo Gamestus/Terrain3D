@@ -66,6 +66,9 @@
 		<member name="displacement_scale" type="float" setter="set_displacement_scale" getter="get_displacement_scale" default="0.0">
 			The scale of the displaced surface height for this material.
 		</member>
+		<member name="height_blend_strength" type="float" setter="set_height_blend_strength" getter="get_height_blend_strength" default="1.0">
+			Scales the texture height channel around midpoint 0.5 before height-based material blending. 1.0 preserves the source height, 0.0 removes height influence, and higher values increase height contrast.
+		</member>
 		<member name="id" type="int" setter="set_id" getter="get_id" default="0">
 			The user settable ID of the texture, between 0 and 31. You can change this to reorder textures in the list, however it won't change the ID painted on the terrain.
 		</member>
@@ -80,6 +83,9 @@
 		</member>
 		<member name="roughness" type="float" setter="set_roughness" getter="get_roughness" default="0.0">
 			Increases or decreases the roughness texture values.
+		</member>
+		<member name="snow_amount_modifier" type="float" setter="set_snow_amount_modifier" getter="get_snow_amount_modifier" default="1.0">
+			Modifies how strongly this material receives the global snow layer between snow_amount 0.0 and 1.0. The global endpoints remain fixed: 0.0 means no snow and 1.0 means full snow coverage.
 		</member>
 		<member name="uv_scale" type="float" setter="set_uv_scale" getter="get_uv_scale" default="0.1">
 			The scale of the textures.

@@ -107,6 +107,9 @@
 		<member name="projection_enabled" type="bool" setter="set_projection_enabled" getter="get_projection_enabled" default="false">
 			Enables textures to be projected vertically when placed on slopes above 45 degrees. This is useful for mapping textures on cliff faces without stretching, even though the polygons are stretched.
 		</member>
+		<member name="snow_enabled" type="bool" setter="set_snow_enabled" getter="get_snow_enabled" default="false">
+			Enables a global snow material layer that samples an existing texture asset by ID and blends it with the terrain using the snow material's height channel.
+		</member>
 		<member name="shader_override" type="Shader" setter="set_shader_override" getter="get_shader_override">
 			If shader_override_enabled is true and this Shader is valid, the material will use this custom shader code. If this is blank when you enable the override, the system will generate a shader with the current settings. So if you have a debug view enabled, the generated shader will have all of that code. A visual shader will also work here. However we only generate a text based shader so currently a visual shader needs to be constructed with the base code before it can work.
 		</member>

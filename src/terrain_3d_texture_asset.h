@@ -21,6 +21,8 @@ class Terrain3DTextureAsset : public Terrain3DAssetResource {
 	real_t _ao_strength = 0.5f;
 	real_t _ao_light_affect = 0.0f;
 	real_t _roughness = 0.f;
+	real_t _snow_amount_modifier = 1.0f;
+	real_t _height_blend_strength = 1.0f;
 	real_t _displacement_scale = 0.0f;
 	real_t _displacement_offset = 0.0f;
 	real_t _uv_scale = 0.1f;
@@ -70,6 +72,12 @@ public:
 
 	void set_roughness(const real_t p_roughness);
 	real_t get_roughness() const { return _roughness; }
+
+	void set_snow_amount_modifier(const real_t p_snow_amount_modifier);
+	real_t get_snow_amount_modifier() const { return _snow_amount_modifier; }
+
+	void set_height_blend_strength(const real_t p_height_blend_strength);
+	real_t get_height_blend_strength() const { return _height_blend_strength; }
 
 	void set_displacement_scale(const real_t p_displacement_scale);
 	real_t get_displacement_scale() const { return _displacement_scale; }
