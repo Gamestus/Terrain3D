@@ -63,7 +63,9 @@ R"(
 	SPECULAR = 1. - mat.normal_rough.a;
 //INSERT: PUDDLES_OUTPUT_ROUGHNESS
 	ROUGHNESS = roughness;
-	SPECULAR = mix(1.0 - mat.normal_rough.a, puddle_specular, __puddle_mask);
+	float __base_spec = 1.0 - mat.normal_rough.a;
+	float __wet_spec = mix(__base_spec, 1.0, material_wetness);
+	SPECULAR = mix(__wet_spec, puddle_specular, __puddle_mask);
 	METALLIC = puddle_metallic * __puddle_mask;
 //INSERT: OUTPUT_NORMAL_MAP
 	// Repack final normal map value.

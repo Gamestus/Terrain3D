@@ -184,30 +184,25 @@ String Terrain3DMaterial::_generate_shader_code() const {
 			break;
 	}
 	if (!_auto_shader_enabled) {
-		excludes.push_back("AUTO_SHADER_UNIFORMS");
 		excludes.push_back("AUTO_SHADER");
 	}
 	if (!_dual_scaling_enabled) {
-		excludes.push_back("DUAL_SCALING_UNIFORMS");
 		excludes.push_back("DUAL_SCALING");
 		excludes.push_back("DUAL_SCALING_CONDITION_0");
 		excludes.push_back("DUAL_SCALING_CONDITION_1");
 		excludes.push_back("DUAL_SCALING_MIX");
 	}
 	if (!_macro_variation_enabled) {
-		excludes.push_back("MACRO_VARIATION_UNIFORMS");
 		excludes.push_back("MACRO_VARIATION");
 	}
 	if (!_projection_enabled) {
 		excludes.push_back("PROJECTION");
 	}
 	if (!_snow_enabled) {
-		excludes.push_back("SNOW_UNIFORMS");
 		excludes.push_back("SNOW_BLEND");
 	}
 	if (!_puddles_enabled) {
 		excludes.push_back("PUDDLES_FUNCTIONS");
-		excludes.push_back("PUDDLES_UNIFORMS");
 		excludes.push_back("PUDDLES");
 		excludes.push_back("PUDDLES_APPLY");
 		excludes.push_back("PUDDLES_OUTPUT_ROUGHNESS");
@@ -1109,23 +1104,6 @@ Error Terrain3DMaterial::save(const String &p_path) {
 		}
 	}
 
-	// Remove saved shader params that don't exist in either shader
-	Array keys = _shader_params.keys();
-	for (const StringName &name : keys) {
-		bool has = false;
-		for (const Dictionary &dict : param_list) {
-			StringName dname = dict["name"];
-			if (name == dname) {
-				has = true;
-				break;
-			}
-		}
-		if (!has) {
-			LOG(DEBUG, "'", name, "' not found in shader parameters. Removing from dictionary.");
-			_shader_params.erase(name);
-		}
-	}
-
 	// Save to external resource file if specified
 	Error err = OK;
 	String path = get_path();
@@ -1226,6 +1204,38 @@ void Terrain3DMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 			}
 		}
 	}
+	// Keep serialized values visible even if a shader variant omits a uniform name.
+	Array saved_keys = _shader_params.keys();
+	for (const Variant &key : saved_keys) {
+		const StringName name = key;
+		if (new_active_params.has(name)) {
+			continue;
+		}
+		const Variant val = _shader_params[name];
+		Dictionary dict;
+		dict["name"] = name;
+		if (val.get_type() == Variant::OBJECT) {
+			dict["type"] = Variant::OBJECT;
+			dict["hint"] = PROPERTY_HINT_RESOURCE_TYPE;
+			dict["hint_string"] = "Texture2D";
+		} else {
+			dict["type"] = val.get_type();
+			dict["hint"] = PROPERTY_HINT_NONE;
+			dict["hint_string"] = "";
+		}
+		dict["usage"] = PROPERTY_USAGE_EDITOR;
+		current_group = StringName("shader_uniforms.general");
+		Array group;
+		if (grouped_params.has(current_group)) {
+			group = grouped_params[current_group];
+		} else {
+			grouped_params[current_group] = Array();
+			group = grouped_params[current_group];
+		}
+		group.push_back(dict);
+		grouped_params[current_group] = group;
+		new_active_params.push_back(name);
+	}
 	_active_params = new_active_params;
 
 	// Populate Godot's property list
@@ -1253,7 +1263,7 @@ void Terrain3DMaterial::_get_property_list(List<PropertyInfo> *p_list) const {
 bool Terrain3DMaterial::_property_can_revert(const StringName &p_name) const {
 	IS_INIT_COND(!_active_params.has(p_name), Resource::_property_can_revert(p_name));
 	Variant default_value = RS->shader_get_parameter_default(get_shader_rid(), p_name);
-	Variant current_value = RS->material_get_param(_material, p_name);
+	Variant current_value = _shader_params.has(p_name) ? _shader_params[p_name] : RS->material_get_param(_material, p_name);
 	return default_value != current_value;
 }
 
@@ -1302,12 +1312,11 @@ bool Terrain3DMaterial::_set(const StringName &p_name, const Variant &p_property
 bool Terrain3DMaterial::_get(const StringName &p_name, Variant &r_property) const {
 	IS_INIT_COND(!_active_params.has(p_name), Resource::_get(p_name, r_property));
 
-	r_property = RS->material_get_param(_material, p_name);
-	// Material server only has RIDs, but inspector needs objects for things like Textures
-	// So if its an RID, return the object
-	if (r_property.get_type() == Variant::RID && _shader_params.has(p_name)) {
+	if (_shader_params.has(p_name)) {
 		r_property = _shader_params[p_name];
+		return true;
 	}
+	r_property = RS->material_get_param(_material, p_name);
 	return true;
 }
 

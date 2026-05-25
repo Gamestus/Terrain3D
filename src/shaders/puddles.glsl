@@ -27,16 +27,19 @@ vec2 puddle_get_ripple_offset(vec2 world_xz) {
 	}
 
 	float __ripple_radius = puddle_ripple_max_radius * __rain;
-	float resolution = 10.0 * exp2(-3.0);
+	const float resolution = 1.25;
 	vec2 uv = world_xz / puddle_ripple_scale * resolution;
 	vec2 p0 = floor(uv);
 	vec2 circles = vec2(0.0);
-	for (float j = -puddle_ripple_max_radius; j <= puddle_ripple_max_radius; ++j) {
-		for (float i = -puddle_ripple_max_radius; i <= puddle_ripple_max_radius; ++i) {
-			if (max(abs(i), abs(j)) > __ripple_radius + 0.5) {
+	float weight_sum = 0.0;
+	int rad = clamp(int(floor(__ripple_radius + 0.5)), 0, int(puddle_ripple_max_radius));
+	for (int j = -rad; j <= rad; ++j) {
+		for (int i = -rad; i <= rad; ++i) {
+			vec2 ij = vec2(float(i), float(j));
+			if (length(ij) > __ripple_radius + 0.5) {
 				continue;
 			}
-			vec2 pi = p0 + vec2(i, j);
+			vec2 pi = p0 + ij;
 			vec2 hsh = puddle_ripple_hash22(pi);
 			// Fewer active drops when rain is light (stochastic cull).
 			if (puddle_ripple_hash12(hsh + 0.37) > __rain) {
@@ -45,20 +48,28 @@ vec2 puddle_get_ripple_offset(vec2 world_xz) {
 			vec2 p = pi + puddle_ripple_hash22(hsh);
 			float t = fract(puddle_ripple_speed * TIME + puddle_ripple_hash12(hsh));
 			vec2 v = p - uv;
-			float d = length(v) - (__ripple_radius + 1.0) * t;
+			float dist = length(v);
+			float d = dist - (__ripple_radius + 1.0) * t;
 			float h = 1e-3;
 			float d1 = d - h;
 			float d2 = d + h;
 			float p1 = sin(31.0 * d1) * smoothstep(-0.6, -0.3, d1) * smoothstep(0.0, -0.3, d1);
 			float p2 = sin(31.0 * d2) * smoothstep(-0.6, -0.3, d2) * smoothstep(0.0, -0.3, d2);
-			circles += 0.5 * normalize(v) * ((p2 - p1) / (2.0 * h) * (1.0 - t) * (1.0 - t));
+			vec2 dir = v / max(dist, 1e-4);
+			vec2 contrib = 0.5 * dir * ((p2 - p1) / (2.0 * h) * (1.0 - t) * (1.0 - t));
+			// Circular fade per grid cell hides square voronoi seams.
+			float cell_fade = 1.0 - smoothstep(0.42, 0.5, length(uv - (pi + vec2(0.5))));
+			float w = cell_fade;
+			circles += contrib * w;
+			weight_sum += w;
 		}
 	}
-	float __grid = __ripple_radius * 2.0 + 1.0;
-	circles /= max(__grid * __grid, 1.0);
+	circles /= max(weight_sum, 1e-4);
 	float intensity = mix(0.01, 0.15, smoothstep(0.1, 0.6, abs(fract(0.05 * TIME + 0.5) * 2.0 - 1.0)));
-	vec3 n = vec3(circles, sqrt(1.0 - dot(circles, circles)));
-	vec2 __offset = (intensity * n.xy) + 5.0 * pow(clamp(dot(n, normalize(vec3(1.0, 0.7, 0.5))), 0.0, 1.0), 6.0);
+	vec3 n = vec3(circles, sqrt(max(1.0 - dot(circles, circles), 0.0)));
+	vec3 light_dir = normalize(vec3(1.0, 0.7, 0.5));
+	float spec = pow(clamp(dot(n, light_dir), 0.0, 1.0), 4.0);
+	vec2 __offset = intensity * n.xy + light_dir.xy * spec * 0.35;
 	return __offset * __rain;
 }
 
@@ -81,6 +92,7 @@ uniform float puddle_ripple_scale : hint_range(0.1, 10.0, 0.1) = 1.0;
 uniform float puddle_ripple_speed : hint_range(0.1, 2.0, 0.01) = 0.5;
 uniform float puddle_ripple_strength : hint_range(0.0, 2.0, 0.01) = 1.0;
 uniform float puddle_normal_depth : hint_range(0.0, 2.0, 0.01) = 1.0;
+uniform float material_wetness : hint_range(0.0, 1.0, 0.01) = 0.0;
 group_uniforms;
 
 //INSERT: PUDDLES
@@ -99,14 +111,19 @@ group_uniforms;
 		w_normal.y);
 	float __puddle_mask = clamp(__noise_mask * __height_mask * __slope_mask, 0.0, 1.0);
 
-	// Full ripple strength under the puddle; mask only blends material, not wave amplitude.
-	vec2 __ripple_offset = puddle_get_ripple_offset(v_vertex.xz) * puddle_ripple_strength;
+	// Full ripple strength under the puddle; skip expensive ripple where there is no puddle.
+	vec2 __ripple_offset = vec2(0.0);
+	if (__puddle_mask > 0.001 && puddle_rain_intensity > 0.001) {
+		__ripple_offset = puddle_get_ripple_offset(v_vertex.xz) * puddle_ripple_strength;
+	}
 	vec3 __puddle_nrm = normalize(vec3(-__ripple_offset.x, 1.0, -__ripple_offset.y));
 	mat.albedo_height.rgb = mix(mat.albedo_height.rgb, puddle_color.rgb, __puddle_mask * puddle_color.a);
 	mat.normal_rough = mix(mat.normal_rough, vec4(__puddle_nrm, puddle_roughness), __puddle_mask);
 	mat.normal_map_depth = mix(mat.normal_map_depth, puddle_normal_depth, __puddle_mask);
 
 //INSERT: PUDDLES_APPLY
+	// Global wetness on base material (specular in PUDDLES_OUTPUT_ROUGHNESS); puddles unchanged.
+	roughness *= mix(1.0, 0.0, material_wetness);
 	roughness = mix(roughness, puddle_roughness, __puddle_mask);
 
 )"
