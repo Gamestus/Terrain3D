@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://addons/terrain_3d/extras/shaders/mesh_weather.gdshader" id="1_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_shader")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/roughness = 0.7
+shader_parameter/metallic = 0.0
+shader_parameter/normal_depth = 1.0
+shader_parameter/uv_scale = 1.0
+shader_parameter/use_textures = false
+shader_parameter/puddle_ripples_enabled = true

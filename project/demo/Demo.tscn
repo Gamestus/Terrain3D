@@ -11,6 +11,7 @@
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="8_g2of2"]
 [ext_resource type="Script" uid="uid://ca54vvf85dgpc" path="res://addons/terrain_3d/extras/terrain_mesh_material.gd" id="10_fhs52"]
 [ext_resource type="Shader" uid="uid://cryb05gtm2dsc" path="res://addons/terrain_3d/extras/shaders/terrain_mesh.gdshader" id="10_jkl3n"]
+[ext_resource type="Script" path="res://addons/terrain_3d/extras/terrain_mesh_surface_material.gd" id="11_surface"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0hg6v"]
 frequency = 0.0205
@@ -70,6 +71,11 @@ shader_parameter/puddle_ripple_strength = 1.0
 shader_parameter/puddle_normal_depth = 1.0
 shader_parameter/material_wetness = 0.0
 
+[sub_resource type="Resource" id="TerrainMeshSurfaceMaterial_demo"]
+script = ExtResource("11_surface")
+surface = 0
+material = SubResource("ShaderMaterial_877j2")
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_jkl3n"]
 
 [node name="Demo" type="Node" unique_id=922701797]
@@ -109,11 +115,10 @@ terrain = NodePath("..")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1475322654 node_paths=PackedStringArray("terrain", "mesh_instance")]
 transform = Transform3D(5.3831916, 0, 0, 0, 0.9999995, 0.005386114, 0, -0.00080281496, 6.709127, 529.82263, 102.20469, -53.759007)
-material_override = SubResource("ShaderMaterial_877j2")
 mesh = SubResource("PlaneMesh_jkl3n")
 script = ExtResource("10_fhs52")
 terrain = NodePath("../Terrain3D")
 mesh_instance = NodePath(".")
-material = SubResource("ShaderMaterial_877j2")
+surfaces = Array[ExtResource("11_surface")]([SubResource("TerrainMeshSurfaceMaterial_demo")])
 
 [editable path="Environment"]
