@@ -57,9 +57,14 @@ vec2 puddle_get_ripple_offset(vec2 world_xz) {
 			float p2 = sin(31.0 * d2) * smoothstep(-0.6, -0.3, d2) * smoothstep(0.0, -0.3, d2);
 			vec2 dir = v / max(dist, 1e-4);
 			vec2 contrib = 0.5 * dir * ((p2 - p1) / (2.0 * h) * (1.0 - t) * (1.0 - t));
-			// Circular fade per grid cell hides square voronoi seams.
-			float cell_fade = 1.0 - smoothstep(0.42, 0.5, length(uv - (pi + vec2(0.5))));
-			float w = cell_fade;
+			// Fade around the drop center so rings are not clipped by the cell origin.
+			float max_ripple_dist = __ripple_radius + 1.0;
+			float drop_fade = 1.0 - smoothstep(max_ripple_dist + 0.1, max_ripple_dist + 0.35, length(uv - p));
+			// Hide square voronoi seams at cell edges without offsetting ripple centers.
+			vec2 cell_q = fract(uv - pi);
+			float edge_dist = min(min(cell_q.x, 1.0 - cell_q.x), min(cell_q.y, 1.0 - cell_q.y));
+			float seam_fade = smoothstep(0.0, 0.08, edge_dist);
+			float w = drop_fade * seam_fade;
 			circles += contrib * w;
 			weight_sum += w;
 		}
@@ -86,6 +91,8 @@ uniform vec4 puddle_color : source_color = vec4(0.08, 0.12, 0.16, 0.85);
 uniform float puddle_roughness : hint_range(0.0, 1.0, 0.01) = 0.04;
 uniform float puddle_specular : hint_range(0.0, 1.0, 0.01) = 0.65;
 uniform float puddle_metallic : hint_range(0.0, 1.0, 0.01) = 0.0;
+uniform bool puddle_ripples_enabled = true;
+uniform float puddle_height_cutoff : hint_range(-1000.0, 1000.0, 0.1) = -1000.0;
 uniform float puddle_ripple_max_radius : hint_range(0.0, 5.0, 1.0) = 2.0;
 uniform float puddle_rain_intensity : hint_range(0.0, 1.0, 0.01) = 1.0;
 uniform float puddle_ripple_scale : hint_range(0.1, 10.0, 0.1) = 1.0;
@@ -109,11 +116,17 @@ group_uniforms;
 		puddle_slope_limit - puddle_slope_falloff,
 		puddle_slope_limit,
 		w_normal.y);
-	float __puddle_mask = clamp(__noise_mask * __height_mask * __slope_mask, 0.0, 1.0);
+	float __world_height_mask = smoothstep(
+		puddle_height_cutoff - puddle_edge_fade,
+		puddle_height_cutoff + puddle_edge_fade,
+		v_vertex.y);
+	float __puddle_mask = clamp(
+		__noise_mask * __height_mask * __slope_mask * __world_height_mask,
+		0.0, 1.0);
 
 	// Full ripple strength under the puddle; skip expensive ripple where there is no puddle.
 	vec2 __ripple_offset = vec2(0.0);
-	if (__puddle_mask > 0.001 && puddle_rain_intensity > 0.001) {
+	if (__puddle_mask > 0.001 && puddle_ripples_enabled && puddle_rain_intensity > 0.001) {
 		__ripple_offset = puddle_get_ripple_offset(v_vertex.xz) * puddle_ripple_strength;
 	}
 	vec3 __puddle_nrm = normalize(vec3(-__ripple_offset.x, 1.0, -__ripple_offset.y));

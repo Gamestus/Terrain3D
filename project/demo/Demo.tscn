@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://chol2xlfbq7cu"]
+[gd_scene format=4 uid="uid://chol2xlfbq7cu"]
 
 [ext_resource type="Script" uid="uid://chstoagn42gbr" path="res://demo/src/DemoScene.gd" id="1_k7qca"]
 [ext_resource type="PackedScene" uid="uid://d2jihfohphuue" path="res://demo/components/UI.tscn" id="2_nqak5"]
@@ -9,6 +9,68 @@
 [ext_resource type="Material" uid="uid://cgk4glwmc4vk2" path="res://addons/terrain_3d/extras/shaders/M_ocean.tres" id="7_fwrtk"]
 [ext_resource type="PackedScene" uid="uid://d3sr0a7dxfkr8" path="res://addons/terrain_3d/extras/particle_example/Terrain3DParticles.tscn" id="8_fwrtk"]
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="8_g2of2"]
+[ext_resource type="Script" uid="uid://ca54vvf85dgpc" path="res://addons/terrain_3d/extras/terrain_mesh_material.gd" id="10_fhs52"]
+[ext_resource type="Shader" uid="uid://cryb05gtm2dsc" path="res://addons/terrain_3d/extras/shaders/terrain_mesh.gdshader" id="10_jkl3n"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0hg6v"]
+frequency = 0.0205
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rlu6m"]
+noise = SubResource("FastNoiseLite_0hg6v")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_877j2"]
+render_priority = 0
+shader = ExtResource("10_jkl3n")
+shader_parameter/_vertex_spacing = 1.0
+shader_parameter/_vertex_density = 1.0
+shader_parameter/_region_size = 1024.0
+shader_parameter/_region_texel_size = 0.0009765625
+shader_parameter/_region_map_size = 32
+shader_parameter/_region_map = PackedInt32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_region_locations = Array[Vector2i]([Vector2i(0, -1), Vector2i(0, -2), Vector2i(0, 0)])
+shader_parameter/_texture_normal_depth_array = PackedFloat32Array(1.5, 1.4, 1)
+shader_parameter/_texture_ao_strength_array = PackedFloat32Array(1, 1, 0.5)
+shader_parameter/_texture_ao_affect_array = PackedFloat32Array(0.8, 0, 0)
+shader_parameter/_texture_roughness_mod_array = PackedFloat32Array(-0.05, 0, 0)
+shader_parameter/_texture_snow_amount_array = PackedFloat32Array(1, 1, 1)
+shader_parameter/_texture_height_blend_array = PackedFloat32Array(1, 1, 1)
+shader_parameter/_texture_uv_scale_array = PackedFloat32Array(0.1, 0.1, 0.1)
+shader_parameter/_texture_detile_array = PackedVector2Array(0, 0, 0.161, 0, 0, 0.241)
+shader_parameter/_texture_color_array = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/blend_sharpness = 0.5
+shader_parameter/auto_shader_enabled = true
+shader_parameter/auto_slope = 1.0
+shader_parameter/auto_height_reduction = 0.1
+shader_parameter/auto_base_texture = 0
+shader_parameter/auto_overlay_texture = 1
+shader_parameter/snow_enabled = true
+shader_parameter/snow_texture = 2
+shader_parameter/snow_amount = 0.0
+shader_parameter/snow_blend_sharpness = 0.0
+shader_parameter/puddles_enabled = true
+shader_parameter/puddle_noise = SubResource("NoiseTexture2D_rlu6m")
+shader_parameter/puddle_noise_scale = Vector2(0.01, 0.01)
+shader_parameter/puddle_noise_threshold = 0.5
+shader_parameter/puddle_max_material_height = 0.65999998524768
+shader_parameter/puddle_edge_fade = 0.08
+shader_parameter/puddle_slope_limit = 0.88
+shader_parameter/puddle_slope_falloff = 0.12
+shader_parameter/puddle_color = Color(0.08, 0.12, 0.16, 0.85)
+shader_parameter/puddle_roughness = 0.04
+shader_parameter/puddle_specular = 0.65
+shader_parameter/puddle_metallic = 0.0
+shader_parameter/puddle_ripples_enabled = true
+shader_parameter/puddle_height_cutoff = -1000.0
+shader_parameter/puddle_ripple_max_radius = 2.0
+shader_parameter/puddle_rain_intensity = 0.65999998524768
+shader_parameter/puddle_ripple_scale = 1.0
+shader_parameter/puddle_ripple_speed = 0.5
+shader_parameter/puddle_ripple_strength = 1.0
+shader_parameter/puddle_normal_depth = 1.0
+shader_parameter/material_wetness = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jkl3n"]
 
 [node name="Demo" type="Node" unique_id=922701797]
 script = ExtResource("1_k7qca")
@@ -16,6 +78,9 @@ script = ExtResource("1_k7qca")
 [node name="UI" parent="." unique_id=1433441809 instance=ExtResource("2_nqak5")]
 
 [node name="Environment" parent="." unique_id=1320222459 instance=ExtResource("3_egbwy")]
+
+[node name="DirectionalLight3D" parent="Environment" index="1"]
+transform = Transform3D(-0.30901712, -0.72426516, 0.6163983, 0, 0.6481192, 0.76153785, -0.9510566, 0.23532811, -0.20028001, 0, 0, 0)
 
 [node name="Tunnel" parent="." unique_id=307392062 instance=ExtResource("3_kdh0b")]
 
@@ -41,5 +106,14 @@ metadata/_edit_lock_ = true
 [node name="Terrain3DParticles" parent="Terrain3D" unique_id=518978467 node_paths=PackedStringArray("terrain") instance=ExtResource("8_fwrtk")]
 visible = false
 terrain = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1475322654 node_paths=PackedStringArray("terrain", "mesh_instance")]
+transform = Transform3D(5.3831916, 0, 0, 0, 0.9999995, 0.005386114, 0, -0.00080281496, 6.709127, 529.82263, 102.20469, -53.759007)
+material_override = SubResource("ShaderMaterial_877j2")
+mesh = SubResource("PlaneMesh_jkl3n")
+script = ExtResource("10_fhs52")
+terrain = NodePath("../Terrain3D")
+mesh_instance = NodePath(".")
+material = SubResource("ShaderMaterial_877j2")
 
 [editable path="Environment"]

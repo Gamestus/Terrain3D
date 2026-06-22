@@ -46,6 +46,7 @@ _shader_parameters = {
 &"macro_variation1": Color(1, 1, 1, 1),
 &"macro_variation2": Color(1, 1, 1, 1),
 &"macro_variation_slope": 0.333,
+&"material_wetness": 0.25999999418848,
 &"mipmap_bias": 1.0,
 &"noise1_angle": 0.0,
 &"noise1_offset": Vector2(0.5, 0.5),
@@ -54,6 +55,7 @@ _shader_parameters = {
 &"noise_texture": SubResource("NoiseTexture2D_hxs0i"),
 &"puddle_color": Color(0.08, 0.12, 0.16, 0.85),
 &"puddle_edge_fade": 0.08,
+&"puddle_height_cutoff": 6.200014993587388,
 &"puddle_max_material_height": 0.65999998524768,
 &"puddle_metallic": 0.0,
 &"puddle_noise": SubResource("NoiseTexture2D_rlu6m"),
@@ -65,6 +67,7 @@ _shader_parameters = {
 &"puddle_ripple_scale": 1.0,
 &"puddle_ripple_speed": 0.5,
 &"puddle_ripple_strength": 1.0,
+&"puddle_ripples_enabled": true,
 &"puddle_roughness": 0.04,
 &"puddle_slope_falloff": 0.12,
 &"puddle_slope_limit": 0.88,
@@ -78,7 +81,11 @@ _shader_parameters = {
 &"shader_uniforms::macro_variation": null,
 &"shader_uniforms::mipmaps": null,
 &"shader_uniforms::puddles": null,
+&"shader_uniforms::snow": null,
 &"shader_uniforms::world_background_noise": null,
+&"snow_amount": 0.0,
+&"snow_blend_sharpness": 0.0,
+&"snow_texture": 2,
 &"tri_scale_reduction": 0.3,
 &"world_noise_fragment_normals": false,
 &"world_noise_height": 32.0,
@@ -88,10 +95,10 @@ _shader_parameters = {
 &"world_noise_offset": Vector3(0, 0, 0),
 &"world_noise_scale": 5.0
 }
-world_background = 2
 auto_shader_enabled = true
 dual_scaling_enabled = true
 macro_variation_enabled = true
 projection_enabled = true
+snow_enabled = true
 puddles_enabled = true
 displacement_sharpness = 0.25
