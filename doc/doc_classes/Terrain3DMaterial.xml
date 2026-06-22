@@ -113,6 +113,9 @@
 		<member name="puddles_enabled" type="bool" setter="set_puddles_enabled" getter="get_puddles_enabled" default="false">
 			Enables procedural puddles masked by a repeating noise texture, material height (albedo alpha), and terrain slope. [code]material_wetness[/code] (0-1) globally lowers base [code]ROUGHNESS[/code] toward 0 and raises [code]SPECULAR[/code] toward 1; puddles still use [code]puddle_roughness[/code] and [code]puddle_specular[/code]. Animated rain ripples (Zavie / shadecore_dev, CC0) perturb surface normals on puddle pixels only. [code]puddle_rain_intensity[/code] (0-1) controls rain strength. [code]puddle_ripple_max_radius[/code] is the maximum grid radius at full rain.
 		</member>
+		<member name="instancer_ignore_holes" type="bool" setter="set_instancer_ignore_holes" getter="get_instancer_ignore_holes" default="false">
+			When enabled, mesh instances placed by the instancer remain visible in hole areas and use the underlying heightmap height instead of being removed. Terrain holes still cut the terrain mesh and collision as usual.
+		</member>
 		<member name="shader_override" type="Shader" setter="set_shader_override" getter="get_shader_override">
 			If shader_override_enabled is true and this Shader is valid, the material will use this custom shader code. If this is blank when you enable the override, the system will generate a shader with the current settings. So if you have a debug view enabled, the generated shader will have all of that code. A visual shader will also work here. However we only generate a text based shader so currently a visual shader needs to be constructed with the base code before it can work.
 		</member>

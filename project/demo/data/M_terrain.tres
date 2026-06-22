@@ -100,5 +100,5 @@ dual_scaling_enabled = true
 macro_variation_enabled = true
 projection_enabled = true
 snow_enabled = true
-puddles_enabled = true
+instancer_ignore_holes = true
 displacement_sharpness = 0.25

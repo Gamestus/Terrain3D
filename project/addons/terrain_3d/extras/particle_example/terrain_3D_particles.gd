@@ -93,6 +93,14 @@ extends Node3D
 		for p in particle_nodes:
 			p.cast_shadow = value
 
+## When enabled, particles spawn on hole areas using the underlying heightmap height.
+@export var ignore_holes: bool = false:
+	set(value):
+		ignore_holes = value
+		last_pos = Vector3.ZERO
+		for p in particle_nodes:
+			p.restart(true)
+
 ## Access to process material parameters
 @export var process_material: ShaderMaterial
 
@@ -236,3 +244,4 @@ func _update_process_parameters() -> void:
 			RenderingServer.material_set_param(process_rid, "instance_spacing", instance_spacing)
 			RenderingServer.material_set_param(process_rid, "instance_rows", rows)
 			RenderingServer.material_set_param(process_rid, "max_dist", calculated_distance)
+			RenderingServer.material_set_param(process_rid, "ignore_holes", ignore_holes)

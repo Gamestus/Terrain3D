@@ -11,6 +11,8 @@
 #include <godot_cpp/classes/resource_saver.hpp>
 
 #include "logger.h"
+#include "terrain_3d.h"
+#include "terrain_3d_instancer.h"
 #include "terrain_3d_material.h"
 #include "terrain_3d_util.h"
 
@@ -878,6 +880,31 @@ void Terrain3DMaterial::set_puddles_enabled(const bool p_enabled) {
 	_update_shader();
 }
 
+void Terrain3DMaterial::set_instancer_ignore_holes(const bool p_enabled) {
+	SET_IF_DIFF(_instancer_ignore_holes, p_enabled);
+	LOG(INFO, "Instancer ignore holes: ", p_enabled);
+	if (!_terrain || !_terrain->get_instancer()) {
+		return;
+	}
+	Terrain3DInstancer *instancer = _terrain->get_instancer();
+	if (!p_enabled) {
+		const Terrain3DData *data = _terrain->get_data();
+		TypedArray<Vector2i> region_locations = data->get_region_locations();
+		real_t region_span = _terrain->get_region_size() * _terrain->get_vertex_spacing();
+		AABB aabb;
+		for (const Vector2i &region_loc : region_locations) {
+			Vector3 origin(region_loc.x * region_span, -1000.f, region_loc.y * region_span);
+			aabb = aabb.expand(origin);
+			aabb = aabb.expand(origin + Vector3(region_span, 2000.f, region_span));
+		}
+		if (aabb.has_volume()) {
+			instancer->update_transforms(aabb);
+		}
+	} else {
+		instancer->update_mmis(-1, V2I_MAX, true);
+	}
+}
+
 void Terrain3DMaterial::set_shader_override_enabled(const bool p_enabled) {
 	SET_IF_DIFF(_shader_override_enabled, p_enabled);
 	LOG(INFO, "Enable shader override: ", p_enabled);
@@ -1362,6 +1389,8 @@ void Terrain3DMaterial::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_snow_enabled"), &Terrain3DMaterial::get_snow_enabled);
 	ClassDB::bind_method(D_METHOD("set_puddles_enabled", "enabled"), &Terrain3DMaterial::set_puddles_enabled);
 	ClassDB::bind_method(D_METHOD("get_puddles_enabled"), &Terrain3DMaterial::get_puddles_enabled);
+	ClassDB::bind_method(D_METHOD("set_instancer_ignore_holes", "enabled"), &Terrain3DMaterial::set_instancer_ignore_holes);
+	ClassDB::bind_method(D_METHOD("get_instancer_ignore_holes"), &Terrain3DMaterial::get_instancer_ignore_holes);
 
 	ClassDB::bind_method(D_METHOD("set_shader_override_enabled", "enabled"), &Terrain3DMaterial::set_shader_override_enabled);
 	ClassDB::bind_method(D_METHOD("is_shader_override_enabled"), &Terrain3DMaterial::is_shader_override_enabled);
@@ -1451,6 +1480,7 @@ void Terrain3DMaterial::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "projection_enabled"), "set_projection_enabled", "get_projection_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "snow_enabled"), "set_snow_enabled", "get_snow_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "puddles_enabled"), "set_puddles_enabled", "get_puddles_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "instancer_ignore_holes"), "set_instancer_ignore_holes", "get_instancer_ignore_holes");
 
 	ADD_GROUP("PBR Output", "output_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "output_albedo"), "set_output_albedo_enabled", "get_output_albedo_enabled");

@@ -9,9 +9,11 @@
 [ext_resource type="Material" uid="uid://cgk4glwmc4vk2" path="res://addons/terrain_3d/extras/shaders/M_ocean.tres" id="7_fwrtk"]
 [ext_resource type="PackedScene" uid="uid://d3sr0a7dxfkr8" path="res://addons/terrain_3d/extras/particle_example/Terrain3DParticles.tscn" id="8_fwrtk"]
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="8_g2of2"]
+[ext_resource type="Shader" uid="uid://cryb05gtm2dsc" path="res://addons/terrain_3d/extras/shaders/terrain_mesh.gdshader" id="10_877j2"]
 [ext_resource type="Script" uid="uid://ca54vvf85dgpc" path="res://addons/terrain_3d/extras/terrain_mesh_material.gd" id="10_fhs52"]
-[ext_resource type="Shader" uid="uid://cryb05gtm2dsc" path="res://addons/terrain_3d/extras/shaders/terrain_mesh.gdshader" id="10_jkl3n"]
-[ext_resource type="Script" path="res://addons/terrain_3d/extras/terrain_mesh_surface_material.gd" id="11_surface"]
+[ext_resource type="Script" uid="uid://bo2rrt5iffkub" path="res://addons/terrain_3d/extras/terrain_mesh_surface_material.gd" id="12_23r1o"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jkl3n"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0hg6v"]
 frequency = 0.0205
@@ -20,9 +22,9 @@ frequency = 0.0205
 noise = SubResource("FastNoiseLite_0hg6v")
 seamless = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_877j2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8f3ef"]
 render_priority = 0
-shader = ExtResource("10_jkl3n")
+shader = ExtResource("10_877j2")
 shader_parameter/_vertex_spacing = 1.0
 shader_parameter/_vertex_density = 1.0
 shader_parameter/_region_size = 1024.0
@@ -49,7 +51,7 @@ shader_parameter/snow_enabled = true
 shader_parameter/snow_texture = 2
 shader_parameter/snow_amount = 0.0
 shader_parameter/snow_blend_sharpness = 0.0
-shader_parameter/puddles_enabled = true
+shader_parameter/puddles_enabled = false
 shader_parameter/puddle_noise = SubResource("NoiseTexture2D_rlu6m")
 shader_parameter/puddle_noise_scale = Vector2(0.01, 0.01)
 shader_parameter/puddle_noise_threshold = 0.5
@@ -62,7 +64,7 @@ shader_parameter/puddle_roughness = 0.04
 shader_parameter/puddle_specular = 0.65
 shader_parameter/puddle_metallic = 0.0
 shader_parameter/puddle_ripples_enabled = true
-shader_parameter/puddle_height_cutoff = -1000.0
+shader_parameter/puddle_height_cutoff = 6.200014993587388
 shader_parameter/puddle_ripple_max_radius = 2.0
 shader_parameter/puddle_rain_intensity = 0.65999998524768
 shader_parameter/puddle_ripple_scale = 1.0
@@ -71,12 +73,9 @@ shader_parameter/puddle_ripple_strength = 1.0
 shader_parameter/puddle_normal_depth = 1.0
 shader_parameter/material_wetness = 0.0
 
-[sub_resource type="Resource" id="TerrainMeshSurfaceMaterial_demo"]
-script = ExtResource("11_surface")
-surface = 0
-material = SubResource("ShaderMaterial_877j2")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_jkl3n"]
+[sub_resource type="Resource" id="Resource_nk7oj"]
+script = ExtResource("12_23r1o")
+material = SubResource("ShaderMaterial_8f3ef")
 
 [node name="Demo" type="Node" unique_id=922701797]
 script = ExtResource("1_k7qca")
@@ -110,15 +109,16 @@ top_level = true
 metadata/_edit_lock_ = true
 
 [node name="Terrain3DParticles" parent="Terrain3D" unique_id=518978467 node_paths=PackedStringArray("terrain") instance=ExtResource("8_fwrtk")]
-visible = false
 terrain = NodePath("..")
+ignore_holes = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1475322654 node_paths=PackedStringArray("terrain", "mesh_instance")]
-transform = Transform3D(5.3831916, 0, 0, 0, 0.9999995, 0.005386114, 0, -0.00080281496, 6.709127, 529.82263, 102.20469, -53.759007)
+transform = Transform3D(5.3831916, 0, 0, 0, 0.9999995, 0.005386114, 0, -0.00080281496, 6.709127, 497.3627, 99.530594, -57.52719)
 mesh = SubResource("PlaneMesh_jkl3n")
+surface_material_override/0 = SubResource("ShaderMaterial_8f3ef")
 script = ExtResource("10_fhs52")
 terrain = NodePath("../Terrain3D")
 mesh_instance = NodePath(".")
-surfaces = Array[ExtResource("11_surface")]([SubResource("TerrainMeshSurfaceMaterial_demo")])
+surfaces = Array[ExtResource("12_23r1o")]([SubResource("Resource_nk7oj")])
 
 [editable path="Environment"]

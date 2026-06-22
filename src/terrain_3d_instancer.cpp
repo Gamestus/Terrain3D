@@ -5,7 +5,9 @@
 
 #include "constants.h"
 #include "logger.h"
+#include "terrain_3d.h"
 #include "terrain_3d_instancer.h"
+#include "terrain_3d_material.h"
 #include "terrain_3d_region.h"
 #include "terrain_3d_util.h"
 
@@ -516,14 +518,23 @@ Vector2i Terrain3DInstancer::_get_cell(const Vector3 &p_global_position, const i
 Array Terrain3DInstancer::_get_usable_height(const Vector3 &p_global_position, const Vector2 &p_slope_range, const bool p_on_collision, const real_t p_raycast_start) const {
 	IS_DATA_INIT(Array());
 	const Terrain3DData *data = _terrain->get_data();
+	bool ignore_holes = false;
+	Ref<Terrain3DMaterial> material = _terrain->get_material();
+	if (material.is_valid()) {
+		ignore_holes = material->get_instancer_ignore_holes();
+	}
 	real_t height = data->get_height(p_global_position);
+	if (ignore_holes && std::isnan(height)) {
+		height = data->get_map_height(p_global_position);
+	}
 	Dictionary raycast_result;
 	bool raycast_hit = false;
 	real_t raycast_height = -FLT_MAX;
 	Vector3 raycast_normal = V3_UP;
 	// Raycast physics if using on_collision
 	if (p_on_collision) {
-		Vector3 start_pos = Vector3(p_global_position.x, height + p_raycast_start, p_global_position.z);
+		real_t raycast_start_height = std::isnan(height) ? p_raycast_start : height + p_raycast_start;
+		Vector3 start_pos = Vector3(p_global_position.x, raycast_start_height, p_global_position.z);
 		raycast_result = _terrain->get_raycast_result(start_pos, Vector3(0.0f, -p_raycast_start - 1.0f, 0.0f), 0xFFFFFFFF, true);
 		if (raycast_result.has("position")) {
 			raycast_hit = true;

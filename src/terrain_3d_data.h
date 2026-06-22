@@ -139,6 +139,7 @@ public:
 	Color get_pixel(const MapType p_map_type, const Vector3 &p_global_position) const;
 	void set_height(const Vector3 &p_global_position, const real_t p_height);
 	real_t get_height(const Vector3 &p_global_position) const;
+	real_t get_map_height(const Vector3 &p_global_position) const;
 	void set_color(const Vector3 &p_global_position, const Color &p_color);
 	Color get_color(const Vector3 &p_global_position) const;
 	void set_control(const Vector3 &p_global_position, const uint32_t p_control);

@@ -651,10 +651,7 @@ Color Terrain3DData::get_pixel(const MapType p_map_type, const Vector3 &p_global
 	}
 }
 
-real_t Terrain3DData::get_height(const Vector3 &p_global_position) const {
-	if (is_hole(get_control(p_global_position))) {
-		return NAN;
-	}
+real_t Terrain3DData::get_map_height(const Vector3 &p_global_position) const {
 	Vector3 pos = p_global_position;
 	const real_t &step = _vertex_spacing;
 	pos.y = 0.f;
@@ -663,18 +660,24 @@ real_t Terrain3DData::get_height(const Vector3 &p_global_position) const {
 	// If requested position is close to a vertex, return its height
 	if ((pos - pos_round).length_squared() < 0.0001f) {
 		return get_pixel(TYPE_HEIGHT, pos).r;
-	} else {
-		// Otherwise, bilinearly interpolate 4 surrounding vertices
-		Vector3 pos00 = Vector3(floor(pos.x / step) * step, 0.f, floor(pos.z / step) * step);
-		real_t ht00 = get_pixel(TYPE_HEIGHT, pos00).r;
-		Vector3 pos01 = pos00 + Vector3(0.f, 0.f, step);
-		real_t ht01 = get_pixel(TYPE_HEIGHT, pos01).r;
-		Vector3 pos10 = pos00 + Vector3(step, 0.f, 0.f);
-		real_t ht10 = get_pixel(TYPE_HEIGHT, pos10).r;
-		Vector3 pos11 = pos00 + Vector3(step, 0.f, step);
-		real_t ht11 = get_pixel(TYPE_HEIGHT, pos11).r;
-		return bilerp(ht00, ht01, ht10, ht11, pos00, pos11, pos);
 	}
+	// Otherwise, bilinearly interpolate 4 surrounding vertices
+	Vector3 pos00 = Vector3(floor(pos.x / step) * step, 0.f, floor(pos.z / step) * step);
+	real_t ht00 = get_pixel(TYPE_HEIGHT, pos00).r;
+	Vector3 pos01 = pos00 + Vector3(0.f, 0.f, step);
+	real_t ht01 = get_pixel(TYPE_HEIGHT, pos01).r;
+	Vector3 pos10 = pos00 + Vector3(step, 0.f, 0.f);
+	real_t ht10 = get_pixel(TYPE_HEIGHT, pos10).r;
+	Vector3 pos11 = pos00 + Vector3(step, 0.f, step);
+	real_t ht11 = get_pixel(TYPE_HEIGHT, pos11).r;
+	return bilerp(ht00, ht01, ht10, ht11, pos00, pos11, pos);
+}
+
+real_t Terrain3DData::get_height(const Vector3 &p_global_position) const {
+	if (is_hole(get_control(p_global_position))) {
+		return NAN;
+	}
+	return get_map_height(p_global_position);
 }
 
 Vector3 Terrain3DData::get_normal(const Vector3 &p_global_position) const {

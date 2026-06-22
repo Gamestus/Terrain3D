@@ -64,6 +64,7 @@ private:
 	bool _projection_enabled = false;
 	bool _snow_enabled = false;
 	bool _puddles_enabled = false;
+	bool _instancer_ignore_holes = false;
 
 	// PBR Outputs
 	bool _output_albedo_enabled = true;
@@ -149,6 +150,8 @@ public:
 	bool get_snow_enabled() const { return _snow_enabled; }
 	void set_puddles_enabled(const bool p_enabled);
 	bool get_puddles_enabled() const { return _puddles_enabled; }
+	void set_instancer_ignore_holes(const bool p_enabled);
+	bool get_instancer_ignore_holes() const { return _instancer_ignore_holes; }
 
 	void set_shader_override_enabled(const bool p_enabled);
 	bool is_shader_override_enabled() const { return _shader_override_enabled; }

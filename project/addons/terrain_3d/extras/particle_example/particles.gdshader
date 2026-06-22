@@ -38,6 +38,7 @@ uniform int texture_filter : hint_range(-1, 31) = -1; // Specify a texture ID or
 uniform float condition_dither_range : hint_range(0.0, 1.0, 0.01) = 0.15;
 uniform float surface_slope_min : hint_range(0.0, 1.0, 0.01) = 0.87;
 uniform float distance_fade_ammount : hint_range(0.0, 1.0, 0.01) = 0.5;
+uniform bool ignore_holes = false;
 
 group_uniforms private;
 uniform float ground_level : hint_range(-1000., 1000.) = -20.0;
@@ -271,7 +272,7 @@ void start() {
 	float blend = float(control[3] >> 14u & 0xFFu) * 0.003921568627450; // 1. / 255.
 
 	// Filter out holes
-	if (hole) {
+	if (hole && !ignore_holes) {
 		pos.y = 0. / 0.;
 		pos.xz = vec2(100000.0);
 	}
